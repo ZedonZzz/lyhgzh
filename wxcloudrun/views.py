@@ -67,7 +67,12 @@ def get_count():
 
 @app.route('/api/wxMessage', methods=['POST'])
 def wxMessage():
-    """
-    :return: 计数的值
-    """
-    return '200'
+    data = request.get_json()
+    returnData = {
+    "ToUserName": data['ToUserName'],
+    "FromUserName": data['FromUserName'],
+    "CreateTime": data['CreateTime'],
+    "MsgType": data['MsgType'],
+    "Content": data['Content']
+    }
+    return returnData
