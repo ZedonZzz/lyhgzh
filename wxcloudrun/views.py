@@ -65,7 +65,7 @@ def get_count():
     counter = Counters.query.filter(Counters.id == 1).first()
     return make_succ_response(0) if counter is None else make_succ_response(counter.count)
 
-@app.route('/api/wxMessage', methods=['GET'])
+@app.route('/api/wxMessage', methods=['POST'])
 def wxMessage():
     """
     :return: 计数的值
