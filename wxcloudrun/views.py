@@ -122,13 +122,19 @@ def message_post():
             "Content": "无用户信息"
         })
     replyContent = getAiMessage(Content)
-    print(replyContent)
-    replyJson = {
-        "touser": FromUserName,
-        "msgtype": 'text',
-        "text": {
-            "content": replyContent
-        }
-    }
-    send_mess('wxbba632a8926a73d6', replyJson)
-    return make_succ_empty_response()
+    # print(replyContent)
+    # replyJson = {
+    #     "touser": FromUserName,
+    #     "msgtype": 'text',
+    #     "text": {
+    #         "content": replyContent
+    #     }
+    # }
+    # send_mess('wxbba632a8926a73d6', replyJson)
+    return jsonify({
+        "ToUserName": FromUserName,   # 回复给谁
+        "FromUserName": ToUserName,   # 从哪个公众号回复
+        "CreateTime": int(time.time()),
+        "MsgType": "text",
+        "Content": replyContent            # 原样返回
+    })
