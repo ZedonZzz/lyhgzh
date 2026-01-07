@@ -122,9 +122,9 @@ def message_post():
     replyContent = getAiMessage(Content)
     print(replyContent)
     replyJson = {
-        touser: FromUserName,
-        msgtype: 'text',
-        text: {
+        "touser": FromUserName,
+        "msgtype": 'text',
+        "text": {
             content: replyContent
         }
     }
