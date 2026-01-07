@@ -5,6 +5,28 @@ from wxcloudrun.dao import delete_counterbyid, query_counterbyid, insert_counter
 from wxcloudrun.model import Counters
 from wxcloudrun.response import make_succ_empty_response, make_succ_response, make_err_response
 import time
+
+def getAiMessage(msg):
+    ARK_API_KEY = "bd8963b1-a15b-4497-8ac5-30f9f2a08b74"  # 直接写死
+
+    url = "https://ark.cn-beijing.volces.com/api/v3/bots/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {ARK_API_KEY}",
+        "Content-Type": "application/json"
+    }
+
+    payload = {
+        "model": "bot-20250210201752-vdpfr",
+        "stream": False,  # 关闭流式
+        "messages": [
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": msg}
+        ]
+    }
+
+    response = requests.post(url, headers=headers, json=payload)
+    data = response.json()
+    return data['choices'][0]['message']['content']
 @app.route('/')
 def index():
     """
@@ -81,14 +103,7 @@ def message_post():
             "MsgType": "text",
             "Content": "无用户信息"
         })
-    completion = client.bot_chat.completions.create(
-        model="bot-20250210201752-vdpfr", #bot-20250210201752-vdpfr 为您当前的智能体的ID，注意此处与Chat API存在差异。差异对比详见 SDK使用指南
-        messages = [
-            {"role": "system", "content": "你是豆包，是由字节跳动开发的 AI 人工智能助手，"},
-            {"role": "user", "content": Content},
-        ],
-    )
-    replyContent = completion.choices[0].message.content
+    replyContent = getAiMessage(Content)
     # 直接原样回复用户发送的内容
     return jsonify({
         "ToUserName": FromUserName,   # 回复给谁
