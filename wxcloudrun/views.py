@@ -70,4 +70,4 @@ def wxMessage():
     """
     :return: 计数的值
     """
-    return 200
+    return '200'
