@@ -4,6 +4,16 @@ from run import app
 from wxcloudrun.dao import delete_counterbyid, query_counterbyid, insert_counter, update_counterbyid
 from wxcloudrun.model import Counters
 from wxcloudrun.response import make_succ_empty_response, make_succ_response, make_err_response
+import logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
+    handlers=[
+        logging.FileHandler('app.log', encoding='utf-8'),
+        logging.StreamHandler()
+    ]
+)
+
 @app.route('/')
 def index():
     """
@@ -73,7 +83,7 @@ import requests
 import json
 
 def send_wechat_message(openid, content):
-    print(openid, content)
+    app.logger.debug(openid, content)
     url = 'http://api.weixin.qq.com/cgi-bin/message/custom/send'
     payload = {
         "touser": openid,  # 替换成目标用户的 openid
@@ -91,7 +101,7 @@ def send_wechat_message(openid, content):
     try:
         response = requests.post(url, headers=headers, data=json.dumps(payload))
         # 输出返回结果
-        print("接口返回内容:", response.text)
+        app.logger.info("接口返回内容:", response.text)
         return response.json()
     except Exception as e:
         print("请求异常:", e)
