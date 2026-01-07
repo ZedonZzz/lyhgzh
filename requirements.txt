@@ -10,3 +10,4 @@ SQLAlchemy==1.4.29
 Werkzeug==2.0.2
 requests>=2.31.0
 logging==0.4.9.6
+volcengine-python-sdk==5.0.3

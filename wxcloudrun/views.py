@@ -72,7 +72,6 @@ def message_post():
     FromUserName = data.get('FromUserName')
     Content = data.get('Content', '')
     CreateTime = data.get('CreateTime', int(time.time()))
-
     # 无用户信息
     if not FromUserName:
         return jsonify({
@@ -82,14 +81,21 @@ def message_post():
             "MsgType": "text",
             "Content": "无用户信息"
         })
-
+    completion = client.bot_chat.completions.create(
+        model="bot-20250210201752-vdpfr", #bot-20250210201752-vdpfr 为您当前的智能体的ID，注意此处与Chat API存在差异。差异对比详见 SDK使用指南
+        messages = [
+            {"role": "system", "content": "你是豆包，是由字节跳动开发的 AI 人工智能助手，"},
+            {"role": "user", "content": Content},
+        ],
+    )
+    replyContent = completion.choices[0].message.content
     # 直接原样回复用户发送的内容
     return jsonify({
         "ToUserName": FromUserName,   # 回复给谁
         "FromUserName": ToUserName,   # 从哪个公众号回复
         "CreateTime": int(time.time()),
         "MsgType": "text",
-        "Content": Content            # 原样返回
+        "Content": replyContent            # 原样返回
     })
 
 
