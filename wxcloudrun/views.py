@@ -4,8 +4,6 @@ from run import app
 from wxcloudrun.dao import delete_counterbyid, query_counterbyid, insert_counter, update_counterbyid
 from wxcloudrun.model import Counters
 from wxcloudrun.response import make_succ_empty_response, make_succ_response, make_err_response
-
-
 @app.route('/')
 def index():
     """
@@ -68,11 +66,33 @@ def get_count():
 @app.route('/api/wxMessage', methods=['POST'])
 def wxMessage():
     data = request.get_json()
-    returnData = {
-    "ToUserName": data['ToUserName'],
-    "FromUserName": data['FromUserName'],
-    "CreateTime": data['CreateTime'],
-    "MsgType": data['MsgType'],
-    "Content": data['Content']
+    send_wechat_message(data['ToUserName'], '1')
+    return make_succ_empty_response
+
+import requests
+import json
+
+def send_wechat_message(openid, content):
+    print(openid, content)
+    url = 'http://api.weixin.qq.com/cgi-bin/message/custom/send'
+    payload = {
+        "touser": openid,  # 替换成目标用户的 openid
+        "msgtype": "text",
+        "text": {
+            "content": content
+        }
     }
-    return returnData
+
+    # 注意要加 headers 指明是 JSON
+    headers = {
+        "Content-Type": "application/json"
+    }
+
+    try:
+        response = requests.post(url, headers=headers, data=json.dumps(payload))
+        # 输出返回结果
+        print("接口返回内容:", response.text)
+        return response.json()
+    except Exception as e:
+        print("请求异常:", e)
+        return None
