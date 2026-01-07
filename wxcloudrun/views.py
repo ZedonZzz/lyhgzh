@@ -38,10 +38,10 @@ def send_mess(appid, mess):
     try:
         response = requests.post(url, json=mess)  # 自动把 dict 转 JSON
         response.raise_for_status()  # 如果状态码不是 200，会抛出异常
-        print("接口返回内容:", response.text)
+        app.logger.debug("接口返回内容:", response.text)
         return response.json()
     except requests.RequestException as e:
-        print("接口返回错误:", e)
+        app.logger.debug("接口返回错误:", e)
         return {"error": str(e)}
 @app.route('/')
 def index():
