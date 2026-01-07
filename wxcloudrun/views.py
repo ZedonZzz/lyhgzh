@@ -27,6 +27,22 @@ def getAiMessage(msg):
     response = requests.post(url, headers=headers, json=payload)
     data = response.json()
     return data['choices'][0]['message']['content']
+
+def send_mess(appid, mess):
+    """
+    发送微信客服消息
+    appid: 微信小程序或公众号 appid
+    mess: dict 消息内容
+    """
+    url = f"http://api.weixin.qq.com/cgi-bin/message/custom/send?from_appid={appid}"
+    try:
+        response = requests.post(url, json=mess)  # 自动把 dict 转 JSON
+        response.raise_for_status()  # 如果状态码不是 200，会抛出异常
+        print("接口返回内容:", response.text)
+        return response.json()
+    except requests.RequestException as e:
+        print("接口返回错误:", e)
+        return {"error": str(e)}
 @app.route('/')
 def index():
     """
@@ -104,14 +120,16 @@ def message_post():
             "Content": "无用户信息"
         })
     replyContent = getAiMessage(Content)
-    # 直接原样回复用户发送的内容
-    return jsonify({
-        "ToUserName": FromUserName,   # 回复给谁
-        "FromUserName": ToUserName,   # 从哪个公众号回复
-        "CreateTime": int(time.time()),
-        "MsgType": "text",
-        "Content": replyContent            # 原样返回
-    })
+    print(replyContent)
+    replyJson = {
+        touser: FromUserName,
+        msgtype: 'text',
+        text: {
+            content: replyContent
+        }
+    }
+    send_mess('wxbba632a8926a73d6', replyJson)
+    return make_succ_empty_response
 
 
     app.logger.debug(openid, content)
