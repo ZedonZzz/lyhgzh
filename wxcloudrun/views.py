@@ -1,19 +1,10 @@
 from datetime import datetime
-from flask import render_template, request
+from flask import render_template, request, jsonify
 from run import app
 from wxcloudrun.dao import delete_counterbyid, query_counterbyid, insert_counter, update_counterbyid
 from wxcloudrun.model import Counters
 from wxcloudrun.response import make_succ_empty_response, make_succ_response, make_err_response
-import logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
-    handlers=[
-        logging.FileHandler('app.log', encoding='utf-8'),
-        logging.StreamHandler()
-    ]
-)
-
+import time
 @app.route('/')
 def index():
     """
@@ -74,15 +65,34 @@ def get_count():
     return make_succ_response(0) if counter is None else make_succ_response(counter.count)
 
 @app.route('/api/wxMessage', methods=['POST'])
-def wxMessage():
-    data = request.get_json()
-    send_wechat_message(data['ToUserName'], '1')
-    return make_succ_empty_response
+def message_post():
+    data = request.get_json(force=True)
 
-import requests
-import json
+    ToUserName = data.get('ToUserName')
+    FromUserName = data.get('FromUserName')
+    Content = data.get('Content', '')
+    CreateTime = data.get('CreateTime', int(time.time()))
 
-def send_wechat_message(openid, content):
+    # 无用户信息
+    if not FromUserName:
+        return jsonify({
+            "ToUserName": FromUserName,
+            "FromUserName": ToUserName,
+            "CreateTime": CreateTime,
+            "MsgType": "text",
+            "Content": "无用户信息"
+        })
+
+    # 直接原样回复用户发送的内容
+    return jsonify({
+        "ToUserName": FromUserName,   # 回复给谁
+        "FromUserName": ToUserName,   # 从哪个公众号回复
+        "CreateTime": int(time.time()),
+        "MsgType": "text",
+        "Content": Content            # 原样返回
+    })
+
+
     app.logger.debug(openid, content)
     url = 'http://api.weixin.qq.com/cgi-bin/message/custom/send'
     payload = {
