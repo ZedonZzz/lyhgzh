@@ -125,7 +125,7 @@ def message_post():
         "touser": FromUserName,
         "msgtype": 'text',
         "text": {
-            content: replyContent
+            "content": replyContent
         }
     }
     send_mess('wxbba632a8926a73d6', replyJson)
