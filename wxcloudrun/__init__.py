@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import pymysql
 import config
+import logging
 
 # 因MySQLDB不支持Python3，使用pymysql扩展库代替MySQLDB库
 pymysql.install_as_MySQLdb()
@@ -10,6 +11,21 @@ pymysql.install_as_MySQLdb()
 app = Flask(__name__, instance_relative_config=True)
 app.config['DEBUG'] = config.DEBUG
 app.config['JSON_AS_ASCII'] = False
+
+
+# -----------------------------
+# 日志配置
+# -----------------------------
+logging.basicConfig(
+    level=logging.DEBUG,  # 日志级别
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    stream=sys.stdout  # 输出到标准输出
+)
+
+# Flask 自带的 Werkzeug 访问日志也输出到 stdout
+# 下面这行会把 Flask 的默认日志也打到 stdout
+for handler in app.logger.handlers:
+    handler.stream = sys.stdout
 
 # 设定数据库链接
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://{}:{}@{}/flask_demo'.format(config.username, config.password,
@@ -23,3 +39,5 @@ from wxcloudrun import views
 
 # 加载配置
 app.config.from_object('config')
+
+

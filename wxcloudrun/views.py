@@ -110,6 +110,8 @@ def message_post():
     FromUserName = data.get('FromUserName')
     Content = data.get('Content', '')
     CreateTime = data.get('CreateTime', int(time.time()))
+    app.logger.debug("DEBUG: 搜到消息请求")
+    app.logger.debug(FromUserName)
     # 无用户信息
     if not FromUserName:
         return jsonify({
@@ -129,29 +131,4 @@ def message_post():
         }
     }
     send_mess('wxbba632a8926a73d6', replyJson)
-    return make_succ_empty_response
-
-
-    app.logger.debug(openid, content)
-    url = 'http://api.weixin.qq.com/cgi-bin/message/custom/send'
-    payload = {
-        "touser": openid,  # 替换成目标用户的 openid
-        "msgtype": "text",
-        "text": {
-            "content": content
-        }
-    }
-
-    # 注意要加 headers 指明是 JSON
-    headers = {
-        "Content-Type": "application/json"
-    }
-
-    try:
-        response = requests.post(url, headers=headers, data=json.dumps(payload))
-        # 输出返回结果
-        app.logger.info("接口返回内容:", response.text)
-        return response.json()
-    except Exception as e:
-        print("请求异常:", e)
-        return None
+    return make_succ_empty_response()
