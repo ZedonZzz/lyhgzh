@@ -5,7 +5,7 @@ from wxcloudrun.dao import delete_counterbyid, query_counterbyid, insert_counter
 from wxcloudrun.model import Counters
 from wxcloudrun.response import make_succ_empty_response, make_succ_response, make_err_response
 import time
-
+import requests
 def getAiMessage(msg):
     ARK_API_KEY = "bd8963b1-a15b-4497-8ac5-30f9f2a08b74"  # 直接写死
 
