@@ -124,6 +124,7 @@ def message_post():
         })
     replyContent = getAiMessage(Content)
     app.logger.debug(replyContent)
+    time.sleep(6)
     # print(replyContent)
     # replyJson = {
     #     "touser": FromUserName,
