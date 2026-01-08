@@ -112,6 +112,7 @@ def message_post():
     CreateTime = data.get('CreateTime', int(time.time()))
     app.logger.debug("DEBUG: 搜到消息请求")
     app.logger.debug(FromUserName)
+    app.logger.debug(ToUserName)
     # 无用户信息
     if not FromUserName:
         return jsonify({
@@ -122,6 +123,7 @@ def message_post():
             "Content": "无用户信息"
         })
     replyContent = getAiMessage(Content)
+    app.logger.debug(replyContent)
     # print(replyContent)
     # replyJson = {
     #     "touser": FromUserName,
