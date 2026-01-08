@@ -124,7 +124,7 @@ def message_post():
         })
     replyContent = getAiMessage(Content)
     app.logger.debug(replyContent)
-    time.sleep(6)
+    time.sleep(10)
     # print(replyContent)
     # replyJson = {
     #     "touser": FromUserName,
@@ -134,10 +134,10 @@ def message_post():
     #     }
     # }
     # send_mess('wxbba632a8926a73d6', replyJson)
-    # return jsonify({
-    #     "ToUserName": FromUserName,   # 回复给谁
-    #     "FromUserName": ToUserName,   # 从哪个公众号回复
-    #     "CreateTime": int(time.time()),
-    #     "MsgType": "text",
-    #     "Content": replyContent            # 原样返回
-    # })
+    return jsonify({
+        "ToUserName": FromUserName,   # 回复给谁
+        "FromUserName": ToUserName,   # 从哪个公众号回复
+        "CreateTime": int(time.time()),
+        "MsgType": "text",
+        "Content": replyContent            # 原样返回
+    })
